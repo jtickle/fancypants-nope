@@ -1,3 +1,7 @@
 (function($) {
-    this.
-    $.fancypants('registerModule', 'accept');
+    $.fancypants('registerModule', 'accept', {
+        init: function() {
+            console.log(this);
+        },
+    });
+})(jQuery);

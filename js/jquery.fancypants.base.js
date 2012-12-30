@@ -1,11 +1,17 @@
 (function($) {
-    var defaultOptions = {
+    var defaultStaticOptions = {
         source: '',
+    };
+
+    var defaultModule = {
+        options: {
+        },
+        init: function() { },
     };
 
     var staticOptions = { };
 
-    var staticModules = { };
+    var modules = { };
 
     var methods = {
 
@@ -29,24 +35,18 @@
 
                 fpMod = $this.attr('fp-mod');
 
-                // Load from DOM
-                $(this).fancypants('create', fpMod);
+                // Get things rolling lol my comments suck so bad
+                $.fancypants('withModule', fpMod, function(mod) {
+                    data = {
+                        module: $.extend(true, defaultModule, mod),
+                        ui: { },
+                    };
+
+                    $this.data('fancypants', data);
+
+                    data.module.init.apply($this);
+                });
             });
-        },
-
-        create: function(fpMod) {
-            if(!(fpMod in staticModules)) {
-                $.fancypants('loadModule', fpMod,
-                    function() {
-                        staticModules[fpMod].create($(this));
-                    },
-                    function() {
-                        console.log('WARNING: No ' + fpMod + ' loaded in FancyPants nor available from ' + staticOptions.source);
-                    });
-                return;
-            }
-
-            staticModules[fpMod].create($(this));
         },
 
         destroy: function() {
@@ -64,33 +64,60 @@
 
     var staticMethods = {
         init: function(options) {
-            staticOptions = $.extend(true, defaultOptions, options);
+            staticOptions = $.extend(true, defaultStaticOptions, options);
         },
 
-        loadModule: function(fpMod, success, failure) {
-            if(fpMod in staticModules) {
-                console.log('DEBUG: ' + fpMod + ' is already loaded.');
+        registerModule: function(fpMod, handlers) {
+            if(fpMod in modules) {
+                console.log('WARNING: ' + fpMod + ' is already loaded, and will not be re-registered');
                 return;
             }
 
-            url = staticOptions.source + '/jquery.fancypants.' + fpMod + '.js';
+            modules[fpMod] = handlers;
+        },
 
-            // TODO: source object or something?  I don't know if this
-            // provides enough flexibility, but I also don't really want
-            // to implement a full javascript package manager.
-            $.getScript(url,
-                function(data, textStatus, jqxhr) {
-                    console.log('NOTICE: ' + url + ' was loaded successfully');
-                    if(typeof(success) !== 'undefined') {
-                        success();
-                    }
-                })
-            .fail(function(jqxhr, settings, exception) {
-                console.log('DEBUG: ' + url + ' was not loaded');
-                if(typeof(failure) !== 'undefined') {
+        withModule: function(fpMod, success, failure) {
+            if(typeof(success) === 'undefined') {
+                success = function() { };
+            }
+
+            if(typeof(failure) === 'undefined') {
+                failure = function() { };
+            }
+
+            if(!(fpMod in modules)) {
+                url = staticOptions.source + '/jquery.fancypants.' + fpMod + '.js';
+
+                // TODO: source object or something?  I don't know if this
+                // provides enough flexibility, but I also don't really want
+                // to implement a full javascript package manager.
+                $.getScript(url,
+                    function(data, textStatus, jqxhr) {
+                        if(fpMod in modules) {
+                            console.log('NOTICE: ' + url + ' was loaded successfully');
+                            success(modules[fpMod]);
+                        } else {
+                            console.log('ERROR: ' + url + ' was loaded, but module did not register itself');
+                            failure();
+                        }
+                    })
+                .fail(function(jqxhr, settings, exception) {
+                    console.log('DEBUG: ' + url + ' failed to load');
                     failure();
-                }
-            });
+                });
+            } else {
+                success(modules[fpMod]);
+            }
+        },
+
+        on: function() {
+            $('*').each(function() { $(this).fancypants(); });
+            // TODO: FancyPants UI
+        },
+
+        off: function() {
+            $('*').each(function() { $(this).fancypants('destroy'); });
+            // TODO: Destroy FancyPants UI
         },
     };
 
