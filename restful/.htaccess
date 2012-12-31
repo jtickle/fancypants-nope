@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /dev/
+
+RewriteCond %{REQUEST_METHOD} !^GET$
+RewriteCond %{REQUEST_URI} !^.*index.php$
+RewriteCond %{REQUEST_URI} !^.*com/.*$
+RewriteRule ^(.*)$ index.php?uri=$1 [L,QSA]
