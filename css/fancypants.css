@@ -3,7 +3,29 @@
     top: 0;
     right: 0;
     height: 100%;
-    width: 256px;
+    width: 200px;
     border-left: solid #BBB 1px;
     background: #DDD;
+}
+
+.fancypants-widget-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fancypants-widget-item {
+    width: 180px;
+    margin: 10px;
+    text-align: center;
+    border: solid #BBB 2px;
+    border-radius: 5px;
+}
+
+.fancypants-widget-item img {
+    margin: auto;
+}
+
+.fancypants-widget-item p {
+    margin: 0;
 }

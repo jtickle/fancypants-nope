@@ -10,6 +10,8 @@
      };
 
      $.fancypants('registerModule', 'test', {
+         label: 'Test Element',
+         widgetAvailable: true,
 
          init: function() {
              var $this = $(this);

@@ -6,6 +6,10 @@
     };
 
     var defaultModule = {
+        icon: 'img/fancypants.png',
+        label: '',
+        category: '',
+        widgetAvailable: false,
         options: {
         },
         init: function() { },
@@ -19,7 +23,6 @@
         ui: {
             widgetPanel: null,
             widgetList: null,
-            widgets: { },
         },
     };
 
@@ -51,11 +54,13 @@
                 
                 try {
                     var mod = $.fancypants('getModule', fpMod);
-                    
+
                     var data = {
-                        module: $.extend(true, defaultModule, mod),
+                        module: mod,
                         ui: { },
                     };
+
+                    console.log(data.module);
 
                     $this.data('fancypants', data);
                     data.module.init.apply(this);
@@ -80,16 +85,16 @@
 
     var staticMethods = {
         init: function(options) {
-            staticOptions = $.extend(true, defaultStaticOptions, options);
+            staticOptions = $.extend(true, {}, defaultStaticOptions, options);
         },
 
-        registerModule: function(fpMod, handlers) {
+        registerModule: function(fpMod, mod) {
             if(fpMod in staticData.modules) {
                 console.log('WARNING: ' + fpMod + ' is already loaded, and will not be re-registered');
                 return;
             }
 
-            staticData.modules[fpMod] = handlers;
+            staticData.modules[fpMod] = $.extend(true, {}, defaultModule, mod);
         },
 
         getModule: function(fpMod) {
@@ -145,11 +150,30 @@
             ui.widgetPanel = $('<div>');
             ui.widgetList = $('<ul>');
 
-            ui.widgetList.appendTo(ui.widgetDiv);
+            ui.widgetList.addClass('fancypants-widget-list');
+            ui.widgetList.appendTo(ui.widgetPanel);
 
             ui.widgetPanel.addClass('fancypants-widget-panel');
-
             ui.widgetPanel.appendTo($('body'));
+
+            for(var module in staticData.modules) {
+                console.log(module);
+                module = staticData.modules[module];
+                console.log(module);
+                if(!module.widgetAvailable) continue;
+
+                var item  = $('<li>');
+                var icon  = $('<img src="' + module.icon + '">');
+                var label = $('<p>' + module.label + '</p>');
+
+                item.addClass('fancypants-widget-item');
+
+                icon.appendTo(item);
+                label.appendTo(item);
+                item.appendTo(ui.widgetList);
+
+                console.log('DEBUG: Added ' + module.label + ' to widget panel with image at ' + module.icon);
+            }
 
             $('*').each(function() { $(this).fancypants(); });
             staticData.enabled = true;
@@ -159,7 +183,6 @@
             var ui = staticData.ui;
 
             ui.widgetPanel.remove();
-            ui.widgets = {};
             ui.widgetList = null;
             ui.widgetPanel = null;
 
