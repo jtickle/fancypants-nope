@@ -27,7 +27,6 @@
 
         // Initialize Fancypants
         init: function(options) {
-            var count = 0;
             return this.each(function() {
                 var $this = $(this);
 
@@ -153,7 +152,7 @@
             ui.widgetPanel.appendTo($('body'));
 
             $('*').each(function() { $(this).fancypants(); });
-            this.enabled = true;
+            staticData.enabled = true;
         },
 
         off: function() {
@@ -165,11 +164,11 @@
             ui.widgetPanel = null;
 
             $('*').each(function() { $(this).fancypants('destroy'); });
-            this.enabled = false;
+            staticData.enabled = false;
         },
 
         isOn: function() {
-            return enabled;
+            return staticData.enabled;
         },
     };
 
