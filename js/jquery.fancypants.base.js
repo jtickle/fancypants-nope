@@ -11,12 +11,21 @@
 
     var staticOptions = { };
 
-    var modules = { };
+    var staticData = {
+        enabled: false,
+        modules: { },
+        ui: {
+            widgetPanel: null,
+            widgetList: null,
+            widgets: { },
+        },
+    };
 
     var methods = {
 
         // Initialize Fancypants
         init: function(options) {
+            count = 0;
             return this.each(function() {
                 $this = $(this);
 
@@ -35,17 +44,23 @@
 
                 fpMod = $this.attr('fp-mod');
 
-                // Get things rolling lol my comments suck so bad
-                $.fancypants('withModule', fpMod, function(mod) {
+                // TODO: The static function withModule provides a way to have a sort
+                // of module loader, but it's giving me trouble, so fuck it fttb.
+                // GOTTA GET SOMETHING TO SHOW FOR THIS WEEKEND
+                
+                try {
+                    mod = $.fancypants('getModule', fpMod);
+                    
                     data = {
                         module: $.extend(true, defaultModule, mod),
                         ui: { },
                     };
 
                     $this.data('fancypants', data);
-
-                    data.module.init.apply($this);
-                });
+                    data.module.init.apply(this);
+                } catch(e) {
+                    console.log(e);
+                }
             });
         },
 
@@ -68,14 +83,26 @@
         },
 
         registerModule: function(fpMod, handlers) {
-            if(fpMod in modules) {
+            if(fpMod in staticData.modules) {
                 console.log('WARNING: ' + fpMod + ' is already loaded, and will not be re-registered');
                 return;
             }
 
-            modules[fpMod] = handlers;
+            staticData.modules[fpMod] = handlers;
         },
 
+        getModule: function(fpMod) {
+            if(!(fpMod in staticData.modules)) {
+                throw 'ERROR: Tried to use module "' + fpMod + '" but it is not loaded.';
+            }
+
+            return staticData.modules[fpMod];
+        },
+
+        // TODO: this does not work because the callback forgets
+        // where it came from.  May be as simple as moving it into
+        // the dynamic context and calling as $(...).fancypants('withmodule', ...)
+        // but I am tired of looking at it
         withModule: function(fpMod, success, failure) {
             if(typeof(success) === 'undefined') {
                 success = function() { };
@@ -85,7 +112,7 @@
                 failure = function() { };
             }
 
-            if(!(fpMod in modules)) {
+            if(!(fpMod in staticData.modules)) {
                 url = staticOptions.source + '/jquery.fancypants.' + fpMod + '.js';
 
                 // TODO: source object or something?  I don't know if this
@@ -93,9 +120,9 @@
                 // to implement a full javascript package manager.
                 $.getScript(url,
                     function(data, textStatus, jqxhr) {
-                        if(fpMod in modules) {
+                        if(fpMod in staticData.modules) {
                             console.log('NOTICE: ' + url + ' was loaded successfully');
-                            success(modules[fpMod]);
+                            success(staticData.modules[fpMod]);
                         } else {
                             console.log('ERROR: ' + url + ' was loaded, but module did not register itself');
                             failure();
@@ -106,18 +133,40 @@
                     failure();
                 });
             } else {
-                success(modules[fpMod]);
+                success(staticData.modules[fpMod]);
             }
         },
 
         on: function() {
+            ui = staticData.ui;
+
+            ui.widgetPanel = $('<div>');
+            ui.widgetList = $('<ul>');
+
+            ui.widgetList.appendTo(ui.widgetDiv);
+
+            ui.widgetPanel.addClass('fancypants-base-widget-panel');
+
+            ui.widgetPanel.appendTo($('body'));
+
             $('*').each(function() { $(this).fancypants(); });
-            // TODO: FancyPants UI
+            enabled = true;
         },
 
         off: function() {
+            ui = staticData.ui;
+
+            ui.widgetPanel.remove();
+            ui.widgets = {};
+            ui.widgetList = null;
+            ui.widgetPanel = null;
+
             $('*').each(function() { $(this).fancypants('destroy'); });
-            // TODO: Destroy FancyPants UI
+            enabled = false;
+        },
+
+        isOn: function() {
+            return enabled;
         },
     };
 
