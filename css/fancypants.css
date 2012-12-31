@@ -1,0 +1,18 @@
+.fancypants-accept-container {
+    border: solid #BBB 1px;
+    background: #DDD;
+    color: #666;
+    padding: 1em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.fancypants-base-widget-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 256px;
+    border-left: solid #BBB 1px;
+    background: #DDD;
+}
