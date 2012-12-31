@@ -21,6 +21,13 @@
 
              var data = $this.data('fancypants');
          },
+
+         destroy: function() {
+             var $this = $(this);
+
+             $this.removeClass('fancypants-test-container');
+             $this.text('');
+         },
      });
      
  })(jQuery);

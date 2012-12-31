@@ -2,3 +2,9 @@
     background: #DDD;
     border: solid #BBB 1px;
 }
+
+#fp-enable, #fp-disable {
+    position: fixed;
+    bottom: 1em;
+    left: 1em;
+}

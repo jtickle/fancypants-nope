@@ -6,13 +6,16 @@
     width: 200px;
     border-left: solid #BBB 1px;
     background: #DDD;
+    margin: 0;
+    padding: 0;
 }
 
 .fancypants-widget-list {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 !important;
 }
+
 
 .fancypants-widget-item {
     width: 180px;

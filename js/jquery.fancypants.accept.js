@@ -18,5 +18,12 @@
 
             var data = $this.data('fancypants');
         },
+
+        destroy: function() {
+            var $this = $(this);
+            console.log($this);
+            $this.removeClass('fancypants-accept-container');
+            $this.empty();
+        },
     });
 })(jQuery);

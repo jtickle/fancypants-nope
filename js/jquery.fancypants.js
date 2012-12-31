@@ -8,11 +8,12 @@
     var defaultModule = {
         icon: 'img/fancypants.png',
         label: '',
-        category: '',
+        category: 'Other',
         widgetAvailable: false,
         options: {
         },
         init: function() { },
+        destroy: function() { },
     };
 
     var staticOptions = { };
@@ -22,7 +23,6 @@
         modules: { },
         ui: {
             widgetPanel: null,
-            widgetList: null,
         },
     };
 
@@ -60,8 +60,6 @@
                         ui: { },
                     };
 
-                    console.log(data.module);
-
                     $this.data('fancypants', data);
                     data.module.init.apply(this);
                 } catch(e) {
@@ -73,6 +71,11 @@
         destroy: function() {
             return this.each(function() {
                 var $this = $(this);
+                
+                if($this.data('fancypants')) {
+                    // Destroy Fancypants widget
+                    $this.data('fancypants').module.destroy.apply(this);
+                }
 
                 // Unbind any fancypants-related events
                 $this.unbind('.fancypants');
@@ -99,7 +102,6 @@
 
         getModule: function(fpMod) {
             if(!(fpMod in staticData.modules)) {
-                console.log(staticData.modules);
                 throw 'ERROR: Tried to use module "' + fpMod + '" but it is not loaded.';
             }
 
@@ -145,22 +147,38 @@
         },
 
         on: function() {
+            if($.fancypants('isOn')) {
+                console.log('WARNING: Tried to turn on Fancypants; already on');
+                return;
+            }
+
             var ui = staticData.ui;
 
             ui.widgetPanel = $('<div>');
-            ui.widgetList = $('<ul>');
-
-            ui.widgetList.addClass('fancypants-widget-list');
-            ui.widgetList.appendTo(ui.widgetPanel);
 
             ui.widgetPanel.addClass('fancypants-widget-panel');
             ui.widgetPanel.appendTo($('body'));
 
             for(var module in staticData.modules) {
-                console.log(module);
                 module = staticData.modules[module];
-                console.log(module);
                 if(!module.widgetAvailable) continue;
+
+                var cat = module.category;
+
+                var widgetList = ui.widgetPanel.children('[fp-category="' + cat + '"]');
+                if(widgetList.length < 1) {
+                    ui.widgetPanel.append($(
+                        '<h3 fp-category-header="' + cat + '">' + cat + '</h3>'));
+
+                    widgetList = $('<ul fp-category="' + cat + '">');
+                    widgetList.addClass('fancypants-widget-list');
+                    widgetList.appendTo(ui.widgetPanel);
+                    console.log('DEBUG: Created widget list for category ' + cat);
+                }
+                else {
+                    console.log('DEBUG: Found widget list at category ' + cat + ' with ' +
+                            widgetList.length + ' widgets');
+                }
 
                 var item  = $('<li>');
                 var icon  = $('<img src="' + module.icon + '">');
@@ -170,18 +188,26 @@
 
                 icon.appendTo(item);
                 label.appendTo(item);
-                item.appendTo(ui.widgetList);
+                item.appendTo(widgetList);
 
                 console.log('DEBUG: Added ' + module.label + ' to widget panel with image at ' + module.icon);
             }
+
+            ui.widgetPanel.accordion();
 
             $('*').each(function() { $(this).fancypants(); });
             staticData.enabled = true;
         },
 
         off: function() {
+            if(!$.fancypants('isOn')) {
+                console.log('WARNING: Tried to turn off Fancypants; already off');
+                return;
+            }
+
             var ui = staticData.ui;
 
+            ui.widgetPanel.accordion('destroy');
             ui.widgetPanel.remove();
             ui.widgetList = null;
             ui.widgetPanel = null;

@@ -17,15 +17,29 @@
 $(function() {
     $.fancypants({
         source: 'js/',
-    });
-    $.fancypants('on');
+        });
+
+    var enableFp = function() {
+        $('#fp-enable').replaceWith($('<button id="fp-disable">').text('Disable Fancypants'));
+        $('#fp-disable').click(disableFp);
+        if(!$.fancypants('isOn')) $.fancypants('on');
+    }
+
+    var disableFp = function() {
+        $('#fp-disable').replaceWith($('<button id="fp-enable">').text('Enable Fancypants'));
+        $('#fp-enable').click(enableFp);
+        if($.fancypants('isOn')) $.fancypants('off');
+    }
+
+    disableFp();
 });
     </script>
   </head>
   <body>
-    <div fp-mod="accept">
+    <div fp-mod="accept" class="fancypants-hide-when-off">
     </div>
     <div fp-mod="test">
     </div>
+    <p id="fp-disable"></p>
   </body>
 </html>
