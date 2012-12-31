@@ -1,0 +1,8 @@
+.fancypants-test-container {
+    color: #666;
+    padding: 1em;
+    text-align: center;
+    font-weight: bold;
+    -webkit-transform:rotate(-90deg);
+    -moz-transform:rotate(-90deg);
+}

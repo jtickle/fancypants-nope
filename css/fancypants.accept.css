@@ -1,0 +1,8 @@
+.fancypants-accept-container {
+    border: solid #BBB 1px;
+    background: #DDD;
+    color: #666;
+    padding: 1em;
+    text-align: center;
+    font-weight: bold;
+}

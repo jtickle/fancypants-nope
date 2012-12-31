@@ -147,7 +147,7 @@
 
             ui.widgetList.appendTo(ui.widgetDiv);
 
-            ui.widgetPanel.addClass('fancypants-base-widget-panel');
+            ui.widgetPanel.addClass('fancypants-widget-panel');
 
             ui.widgetPanel.appendTo($('body'));
 
