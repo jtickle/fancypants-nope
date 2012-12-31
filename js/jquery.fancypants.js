@@ -190,6 +190,8 @@
                 label.appendTo(item);
                 item.appendTo(widgetList);
 
+                item.draggable({revert: true, cursor: "move"});
+
                 console.log('DEBUG: Added ' + module.label + ' to widget panel with image at ' + module.icon);
             }
 
