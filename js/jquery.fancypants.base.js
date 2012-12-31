@@ -1,3 +1,5 @@
+"use strict";
+
 (function($) {
     var defaultStaticOptions = {
         source: '',
@@ -25,9 +27,9 @@
 
         // Initialize Fancypants
         init: function(options) {
-            count = 0;
+            var count = 0;
             return this.each(function() {
-                $this = $(this);
+                var $this = $(this);
 
                 // Semaphore
                 if($this.data('fancypants')) {
@@ -42,16 +44,16 @@
                     return;
                 }
 
-                fpMod = $this.attr('fp-mod');
+                var fpMod = $this.attr('fp-mod');
 
                 // TODO: The static function withModule provides a way to have a sort
                 // of module loader, but it's giving me trouble, so fuck it fttb.
                 // GOTTA GET SOMETHING TO SHOW FOR THIS WEEKEND
                 
                 try {
-                    mod = $.fancypants('getModule', fpMod);
+                    var mod = $.fancypants('getModule', fpMod);
                     
-                    data = {
+                    var data = {
                         module: $.extend(true, defaultModule, mod),
                         ui: { },
                     };
@@ -66,7 +68,7 @@
 
         destroy: function() {
             return this.each(function() {
-                $this = $(this);
+                var $this = $(this);
 
                 // Unbind any fancypants-related events
                 $this.unbind('.fancypants');
@@ -93,6 +95,7 @@
 
         getModule: function(fpMod) {
             if(!(fpMod in staticData.modules)) {
+                console.log(staticData.modules);
                 throw 'ERROR: Tried to use module "' + fpMod + '" but it is not loaded.';
             }
 
@@ -113,7 +116,7 @@
             }
 
             if(!(fpMod in staticData.modules)) {
-                url = staticOptions.source + '/jquery.fancypants.' + fpMod + '.js';
+                var url = staticOptions.source + '/jquery.fancypants.' + fpMod + '.js';
 
                 // TODO: source object or something?  I don't know if this
                 // provides enough flexibility, but I also don't really want
@@ -138,7 +141,7 @@
         },
 
         on: function() {
-            ui = staticData.ui;
+            var ui = staticData.ui;
 
             ui.widgetPanel = $('<div>');
             ui.widgetList = $('<ul>');
@@ -150,11 +153,11 @@
             ui.widgetPanel.appendTo($('body'));
 
             $('*').each(function() { $(this).fancypants(); });
-            enabled = true;
+            this.enabled = true;
         },
 
         off: function() {
-            ui = staticData.ui;
+            var ui = staticData.ui;
 
             ui.widgetPanel.remove();
             ui.widgets = {};
@@ -162,7 +165,7 @@
             ui.widgetPanel = null;
 
             $('*').each(function() { $(this).fancypants('destroy'); });
-            enabled = false;
+            this.enabled = false;
         },
 
         isOn: function() {
@@ -177,6 +180,7 @@
             return methods.init.apply(this, arguments);
         } else {
             $.error('Method ' + method + ' does not exist on jQuery.fn.fancypants');
+            return undefined;
         }
     };
 
@@ -187,6 +191,7 @@
             return staticMethods.init.apply(this, arguments);
         } else {
             $.error('Method ' + method + ' does not exist on jQuery.fancypants');
+            return undefined;
         }
     };
 })(jQuery);

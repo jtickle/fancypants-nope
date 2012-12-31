@@ -1,3 +1,7 @@
+/**
+ * Now might be a good time to start breaking this out by module.
+ */
+
 .fancypants-accept-container {
     border: solid #BBB 1px;
     background: #DDD;
@@ -5,6 +9,19 @@
     padding: 1em;
     text-align: center;
     font-weight: bold;
+}
+
+.xyzzy {
+    background: #DDD;
+    border: solid #BBB 1px;
+}
+
+.fancypants-test-container {
+    color: #666;
+    padding: 1em;
+    text-align: center;
+    font-weight: bold;
+    -webkit-transform:rotate(-90deg);
 }
 
 .fancypants-base-widget-panel {
