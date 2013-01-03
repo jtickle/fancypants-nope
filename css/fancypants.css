@@ -1,8 +1,4 @@
 .fancypants-widget-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100%;
     width: 200px;
     border-left: solid #BBB 1px;
     background: #DDD;
@@ -17,7 +13,6 @@
     overflow: visible !important;
 }
 
-
 .fancypants-widget-item {
     width: 180px;
     margin: 10px;
@@ -25,6 +20,7 @@
     border: solid #BBB 2px;
     border-radius: 5px;
     cursor: move;
+    background-color: #FFF;
 }
 
 .fancypants-widget-item img {
