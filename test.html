@@ -7,39 +7,13 @@
     <link rel="stylesheet" href="css/fancypants.test.css">
     <link rel="stylesheet" href="css/fancypants.twocol.css">
     <link rel="stylesheet" href="css/site.css">
-    <script src="js/jquery.js"></script>
-    <script src="js/jquery-ui.js"></script>
-    <script src="js/jquery.fancypants.js"></script>
-    <script src="js/jquery.fancypants.test.js"></script>
-    <script src="js/jquery.fancypants.accept.js"></script>
-    <script src="js/jquery.fancypants.twocol.js"></script>
-    <script type="text/javascript">
-$(function() {
-    $.fancypants({
-        source: 'js/',
-        });
-
-    var enableFp = function() {
-        $('#fp-enable').replaceWith($('<button id="fp-disable">').text('Disable Fancypants'));
-        $('#fp-disable').click(disableFp);
-        if(!$.fancypants('isOn')) $.fancypants('on');
-    }
-
-    var disableFp = function() {
-        $('#fp-disable').replaceWith($('<button id="fp-enable">').text('Enable Fancypants'));
-        $('#fp-enable').click(enableFp);
-        if($.fancypants('isOn')) $.fancypants('off');
-    }
-
-    disableFp();
-});
-    </script>
   </head>
   <body>
-    <div fp-mod="accept" class="fancypants-hide-when-off">
+    <div data-fp="accept" class="fancypants-hide-when-off">
     </div>
-    <div fp-mod="test">
+    <div data-fp="test">
     </div>
     <p id="fp-disable"></p>
+    <script data-main="common/fp/bootstrap" src="common/libs/require/require.js"></script>
   </body>
 </html>
